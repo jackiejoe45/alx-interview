@@ -13,8 +13,10 @@ def canUnlockAll(boxes):
 
 def searchBox(boxes, knownKeys, index):
     """ recursively searches boxes for keys"""
+    if index >= len(boxes):
+        return knownKeys
     for key in boxes[index]:
         if key not in knownKeys:
             knownKeys.add(key)
             searchBox(boxes, knownKeys, key)
-    return knownKeys
+            return knownKeys
