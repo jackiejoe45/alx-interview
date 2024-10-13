@@ -6,7 +6,7 @@ This module checks boxes to see if they contain keys to unlock all other boxes
 
 def canUnlockAll(boxes):
     """ checks if a box can be unlocked"""
-    knownKeys = {0}
+    knownKeys = []
     knownKeys = searchBox(boxes, knownKeys, 0)
     return (len(knownKeys) == len(boxes))
 
@@ -17,6 +17,6 @@ def searchBox(boxes, knownKeys, index):
         return knownKeys
     for key in boxes[index]:
         if key not in knownKeys:
-            knownKeys.add(key)
+            knownKeys.append(key)
             searchBox(boxes, knownKeys, key)
             return knownKeys
