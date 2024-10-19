@@ -10,6 +10,8 @@ def minOperations(x):
     """
     currentNumber = x
     numberOfOperations = 1
+    if (x <= 0):
+        return 0
     while (currentNumber != 1):
         if (isprime(currentNumber)):
             numberOfOperations = currentNumber
