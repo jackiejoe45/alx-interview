@@ -1,12 +1,14 @@
 #!/usr/bin/python3
 """
-This module returns the minimum number of operations needed to copy a string n times
+This module returns the minimum number of operations 
+needed to copy a string n times
 """
 
 
 def minOperations(n):
     """
-    This function returns the minimum number of operations needed to copy a string n times
+    This function returns the minimum number of operations 
+    needed to copy a string n times
     """
     if n <= 1:
         return 0
