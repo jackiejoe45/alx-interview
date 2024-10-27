@@ -31,7 +31,8 @@ def main():
     }
 
     # Regular expression pattern for log line validation
-    pattern = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+\] \
+    pattern = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \
+    \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+\] \
     "GET /projects/260 HTTP/1.1" (\d{3}) (\d+)$'
 
     try:
