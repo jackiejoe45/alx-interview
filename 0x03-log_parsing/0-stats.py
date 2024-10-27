@@ -1,54 +1,63 @@
 #!/usr/bin/python3
+"""
+Script that reads stdin line by line and computes metrics
+"""
 
 import sys
+import re
+from typing import Dict, Union
 
 
-def print_msg(dict_sc, total_file_size):
+def print_statistics(total_size: int, status_codes: Dict[str, int]) -> None:
     """
-    Method to print
+    Print the current statistics
     Args:
-        dict_sc: dict of status codes
-        total_file_size: total of the file
-    Returns:
-        Nothing
+        total_size: Total file size
+        status_codes: Dictionary of status codes and their counts
     """
+    print(f"File size: {total_size}")
+    for status_code in sorted(status_codes.keys()):
+        if status_codes[status_code] > 0:
+            print(f"{status_code}: {status_codes[status_code]}")
 
-    print("File size: {}".format(total_file_size))
-    for key, val in sorted(dict_sc.items()):
-        if val != 0:
-            print("{}: {}".format(key, val))
 
+def main():
+    """Main function to process the log files"""
+    total_size = 0
+    line_count = 0
+    status_codes = {
+        "200": 0, "301": 0, "400": 0, "401": 0,
+        "403": 0, "404": 0, "405": 0, "500": 0
+    }
 
-total_file_size = 0
-code = 0
-counter = 0
-dict_sc = {"200": 0,
-           "301": 0,
-           "400": 0,
-           "401": 0,
-           "403": 0,
-           "404": 0,
-           "405": 0,
-           "500": 0}
+    # Regular expression pattern for log line validation
+    pattern = r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+\] "GET /projects/260 HTTP/1.1" (\d{3}) (\d+)$'
 
-try:
-    for line in sys.stdin:
-        parsed_line = line.split()  # ✄ trimming
-        parsed_line = parsed_line[::-1]  # inverting
+    try:
+        for line in sys.stdin:
+            try:
+                match = re.match(pattern, line.strip())
+                if match:
+                    status_code = match.group(1)
+                    file_size = int(match.group(2))
 
-        if len(parsed_line) > 2:
-            counter += 1
+                    # Update metrics
+                    if status_code in status_codes:
+                        status_codes[status_code] += 1
+                    total_size += file_size
+                    line_count += 1
 
-            if counter <= 10:
-                total_file_size += int(parsed_line[0])  # file size
-                code = parsed_line[1]  # status code
+                    # Print statistics every 10 lines
+                    if line_count % 10 == 0:
+                        print_statistics(total_size, status_codes)
 
-                if (code in dict_sc.keys()):
-                    dict_sc[code] += 1
+            except (ValueError, IndexError):
+                continue
 
-            if (counter == 10):
-                print_msg(dict_sc, total_file_size)
-                counter = 0
+    except KeyboardInterrupt:
+        # Handle CTRL+C
+        print_statistics(total_size, status_codes)
+        raise
 
-finally:
-    print_msg(dict_sc, total_file_size)
+if __name__ == "__main__":
+    main()
